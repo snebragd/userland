@@ -1,0 +1,33 @@
+#extension GL_OES_EGL_image_external : require
+
+uniform samplerExternalOES tex;
+uniform float segment_u;
+uniform float segment_v;
+varying vec2 texcoord;
+
+void main(void) {
+  vec2 pos = vec2(texcoord.x, texcoord.y);
+  vec4 col= texture2D(tex, pos);
+  //vec4 tmp_col2= texture2D(tex, pos+vec2(1.0/1280.0 , 0.0));
+  //vec4 tmp_col3= texture2D(tex, pos+vec2(0.0 , 1.0/720.0));
+  float v = (0.439 * col.r) - (0.368 * col.g) - (0.071 * col.b) + 0.5;
+  float u = -(0.148 * col.r) - (0.291 * col.g) + (0.439 * col.b) + 0.5;
+  //if (pos.x > 0.66) {  
+  //  gl_FragColor = 5.0*abs(col+col-(tmp_col2+tmp_col3)); 
+  //} 
+  //else {  
+  //  gl_FragColor = col; 
+  //}
+
+  float dist = (segment_u-u)*(segment_u-u)+(segment_v-v)*(segment_v-v);
+  if(segment_u < 0.0) {
+    gl_FragColor = vec4(0.0,1.0,0.0,1.0);//col; 
+  } 	       
+  else if (dist < 0.01) {
+    gl_FragColor = vec4(1.0,0.0,1.0,1.0);//col; 
+//    gl_FragColor = vec4(col.r,col.g,col.b,1.0);
+  }
+  else {  
+    gl_FragColor = vec4(col.r,col.g,col.b,0.0);
+  } 
+}
